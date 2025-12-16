@@ -1,0 +1,4 @@
+backup/
+data/
+results/
+*pycache*

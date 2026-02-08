@@ -2,6 +2,15 @@
 
 This repository contains a linguistics / computational pipeline for modeling phonological change from (Vulgar) Latin to modern Romance languages.
 
+<p align="center">
+  <img src="results/analysis/pca_drift_map_3d.gif" alt="3D PCA drift map (model-derived)" width="720" />
+</p>
+
+## Presentation
+
+- Slides (Google Slides): https://docs.google.com/presentation/d/10DBvOsUYaqgU7RQu3TQsgeUPx0eFKvCZG83Hi8j3nlc/edit?usp=sharing
+- PDF snapshot (committed): [PSM Presentation.pdf](PSM%20Presentation.pdf)
+
 At a high level:
 
 - We start with a noisy cognate dataset (`data/unprocessed/`).

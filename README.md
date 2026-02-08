@@ -4,13 +4,13 @@ This repository contains a linguistics / computational pipeline for modeling pho
 
 At a high level:
 
-- You start with a noisy cognate dataset (`data/unprocessed/`).
-- You run G2P to turn words into phoneme strings (`data/processed/`).
-- You align Latin → target language phoneme strings via Needleman–Wunsch to extract phoneme-shift rules.
-- You train a multitask Transformer that:
+- We start with a noisy cognate dataset (`data/unprocessed/`).
+- We run G2P to turn words into phoneme strings (`data/processed/`).
+- We align Latin → target language phoneme strings via Needleman–Wunsch to extract phoneme-shift rules.
+- We train a multitask Transformer that:
   - translates Latin phoneme sequences into target-language phoneme sequences, and
   - predicts a sparse representation of phoneme shifts for that word (the PSV).
-- You run analysis scripts to visualize drift, compare predictions vs ground truth, and inspect attention.
+- We run analysis scripts to visualize drift, compare predictions vs ground truth, and inspect attention.
 
 ## Terminology: PSM vs PSV
 

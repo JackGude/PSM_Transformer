@@ -137,9 +137,9 @@ class PhonemeTransformer(nn.Module):
             pooled = masked_memory.sum(dim=0) / counts
         else:
             pooled = memory.mean(dim=0)
-        psm_logits = self.aux_head(pooled)
+        psv_logits = self.aux_head(pooled)
 
-        return translation_logits, psm_logits
+        return translation_logits, psv_logits
 
 # --- 3. Helper: Mask Creation Function ---
 

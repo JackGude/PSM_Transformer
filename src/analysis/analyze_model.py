@@ -86,16 +86,16 @@ def analyze_model(model_path, test_data_path, output_dir, device):
 
     print("Running inference...")
     with torch.no_grad():
-        for src, tgt, psm in tqdm(loader):
+        for src, tgt, psv in tqdm(loader):
             src = src.to(device)
             tgt_input = tgt[:-1, :].to(device)
 
             src_mask, tgt_pad_mask, causal_mask = create_masks(
                 src, tgt_input, PAD_IDX, device
             )
-            _, psm_logits = model(src, tgt_input, src_mask, tgt_pad_mask, causal_mask)
+            _, psv_logits = model(src, tgt_input, src_mask, tgt_pad_mask, causal_mask)
 
-            probs = torch.sigmoid(psm_logits).cpu().numpy()
+            probs = torch.sigmoid(psv_logits).cpu().numpy()
 
             # Identify language from the first token (Token 0 is Lang Token)
             lang_token_ids = src[0, :].cpu().numpy()

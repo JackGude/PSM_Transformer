@@ -111,13 +111,13 @@ def run_evaluation(model_path, test_data_path, device, batch_size):
     # --- 5. Run Evaluation Loop ---
     test_loss_trans = 0.0
     test_loss_rules = 0.0
-    all_psm_preds = []
-    all_psm_targets = []
+    all_psv_preds = []
+    all_psv_targets = []
     use_amp = torch.cuda.is_available() or torch.backends.mps.is_available()
 
     with torch.no_grad():
-        for src, tgt, psm in tqdm(test_loader, desc="[Testing]"):
-            src, tgt, psm = src.to(device), tgt.to(device), psm.to(device)
+        for src, tgt, psv in tqdm(test_loader, desc="[Testing]"):
+            src, tgt, psv = src.to(device), tgt.to(device), psv.to(device)
 
             tgt_input = tgt[:-1, :]
             tgt_output = tgt[1:, :]
@@ -127,7 +127,7 @@ def run_evaluation(model_path, test_data_path, device, batch_size):
             )
 
             with autocast(device_type=device.type, enabled=use_amp):
-                trans_logits, psm_logits = model(
+                trans_logits, psv_logits = model(
                     src,
                     tgt_input,
                     src_padding_mask=src_mask,
@@ -140,28 +140,28 @@ def run_evaluation(model_path, test_data_path, device, batch_size):
                 )
                 loss_trans_target = tgt_output.transpose(0, 1).reshape(-1)
                 loss_trans = translation_loss_fn(loss_trans_logits, loss_trans_target)
-                loss_rules = rules_loss_fn(psm_logits, psm)
+                loss_rules = rules_loss_fn(psv_logits, psv)
 
             test_loss_trans += loss_trans.item()
             test_loss_rules += loss_rules.item()
 
-            preds = torch.sigmoid(psm_logits)
+            preds = torch.sigmoid(psv_logits)
             binary_preds = (preds > 0.5).cpu().numpy()
-            all_psm_preds.append(binary_preds)
-            all_psm_targets.append(psm.cpu().numpy().astype(int))
+            all_psv_preds.append(binary_preds)
+            all_psv_targets.append(psv.cpu().numpy().astype(int))
 
     # --- 6. Calculate Final Scores ---
     avg_test_trans_loss = test_loss_trans / len(test_loader)
     avg_test_rules_loss = test_loss_rules / len(test_loader)
 
-    all_psm_preds = np.concatenate(all_psm_preds, axis=0)
-    all_psm_targets = np.concatenate(all_psm_targets, axis=0)
+    all_psv_preds = np.concatenate(all_psv_preds, axis=0)
+    all_psv_targets = np.concatenate(all_psv_targets, axis=0)
 
     f1_micro = f1_score(
-        all_psm_targets, all_psm_preds, average="micro", zero_division=0
+        all_psv_targets, all_psv_preds, average="micro", zero_division=0
     )
     f1_macro = f1_score(
-        all_psm_targets, all_psm_preds, average="macro", zero_division=0
+        all_psv_targets, all_psv_preds, average="macro", zero_division=0
     )
 
     print("\n--- FINAL TEST RESULTS ---")
@@ -169,9 +169,9 @@ def run_evaluation(model_path, test_data_path, device, batch_size):
     print(f"  Test Set: {test_data_path}")
     print("---------------------------------")
     print(f"  Translation Loss:    {avg_test_trans_loss:.4f}")
-    print(f"  Rules (PSM) Loss:    {avg_test_rules_loss:.4f}")
-    print(f"  PSM F1 Score (Micro):  {f1_micro:.4f}")
-    print(f"  PSM F1 Score (Macro):  {f1_macro:.4f}")
+    print(f"  Rules (PSV) Loss:    {avg_test_rules_loss:.4f}")
+    print(f"  PSV F1 Score (Micro):  {f1_micro:.4f}")
+    print(f"  PSV F1 Score (Macro):  {f1_macro:.4f}")
     print("---------------------------------")
 
 

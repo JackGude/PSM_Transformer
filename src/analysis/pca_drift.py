@@ -78,13 +78,13 @@ def generate_drift_map(model_path, test_data_path, output_dir, device):
     id_to_phoneme = {v: k for k, v in data_artifacts["phoneme_to_id"].items()}
 
     with torch.no_grad():
-        for src, tgt, psm in tqdm(loader):
+        for src, tgt, psv in tqdm(loader):
             src = src.to(device)
             tgt_input = tgt[:-1, :].to(device)
             src_mask, tgt_pad_mask, tgt_mask = create_masks(src, tgt_input, PAD_IDX, device)
-            _, psm_logits = model(src, tgt_input, src_mask, tgt_pad_mask, tgt_mask)
+            _, psv_logits = model(src, tgt_input, src_mask, tgt_pad_mask, tgt_mask)
 
-            probs = torch.sigmoid(psm_logits).cpu().numpy()
+            probs = torch.sigmoid(psv_logits).cpu().numpy()
             
             lang_token_ids = src[0, :].cpu().numpy()
             for i in range(probs.shape[0]):

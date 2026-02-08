@@ -84,8 +84,8 @@ class PhonemeDataset(Dataset):
                      [self.phoneme_vocab.get(p, self.phoneme_vocab[UNK_TOKEN]) for p in tgt_phonemes] + \
                      [self.phoneme_vocab[EOS_TOKEN]]
 
-        # Create the full, dense PSM vector
-        psm_vector = torch.zeros(self.psv_vector_size, dtype=torch.float32)
+        # Create the full, dense PSV vector
+        psv_vector = torch.zeros(self.psv_vector_size, dtype=torch.float32)
         
         # Load the sparse list of shifts (e.g., '["k->ʃ", "a->o"]')
         psv_sparse_str = row[self.psv_cols[language]]
@@ -99,7 +99,7 @@ class PhonemeDataset(Dataset):
                         # Find the index for this shift in our master "dictionary"
                         idx = self.psv_vocab_map[shift]
                         # Set that position to 1.0 in our 10,000-long vector
-                        psm_vector[idx] = 1.0 
+                        psv_vector[idx] = 1.0 
             except json.JSONDecodeError:
                 # Handle cases where the data might be corrupted
                 pass 
@@ -107,22 +107,22 @@ class PhonemeDataset(Dataset):
         return (
             torch.tensor(src_tokens, dtype=torch.long),
             torch.tensor(tgt_tokens, dtype=torch.long),
-            psm_vector
+            psv_vector
         )
 
 def collate_fn(batch, pad_idx):
     """
-    Takes a list of (src, tgt, psm) tuples and combines them into a batch.
+    Takes a list of (src, tgt, psv) tuples and combines them into a batch.
     - src and tgt sequences are padded to the same length.
-    - psm vectors are stacked.
+    - psv vectors are stacked.
     """
-    src_batch, tgt_batch, psm_batch = [], [], []
+    src_batch, tgt_batch, psv_batch = [], [], []
     
     # Unzip the batch
-    for src_sample, tgt_sample, psm_sample in batch:
+    for src_sample, tgt_sample, psv_sample in batch:
         src_batch.append(src_sample)
         tgt_batch.append(tgt_sample)
-        psm_batch.append(psm_sample)
+        psv_batch.append(psv_sample)
 
     # Pad sequences to the max length *in this batch*
     # `batch_first=True` means the output shape is (batch_size, seq_len)
@@ -131,9 +131,9 @@ def collate_fn(batch, pad_idx):
     
     # PSM vectors are all the same length, so just stack them
     # into a (batch_size, psv_vector_size) tensor
-    psm_stacked = torch.stack(psm_batch)
+    psv_stacked = torch.stack(psv_batch)
     
-    return src_padded, tgt_padded, psm_stacked
+    return src_padded, tgt_padded, psv_stacked
 
 def build_vocabularies(dataframe, languages, lang_tokens):
     """

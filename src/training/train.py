@@ -277,8 +277,8 @@ def train_one_epoch(
     translation_loss_fn = tools["loss_fns"]["translation"]
     rules_loss_fn = tools["loss_fns"]["rules"]
 
-    for src, tgt, psm in tqdm(loader, desc=f"Epoch {epoch_num:03d} [Train]"):
-        src, tgt, psm = src.to(device), tgt.to(device), psm.to(device)
+    for src, tgt, psv in tqdm(loader, desc=f"Epoch {epoch_num:03d} [Train]"):
+        src, tgt, psv = src.to(device), tgt.to(device), psv.to(device)
 
         tgt_input = tgt[:-1, :]
         tgt_output = tgt[1:, :]
@@ -288,7 +288,7 @@ def train_one_epoch(
         )
 
         with autocast(device_type=device.type, enabled=use_amp):
-            trans_logits, psm_logits = model(
+            trans_logits, psv_logits = model(
                 src,
                 tgt_input,
                 src_padding_mask=src_mask,
@@ -300,7 +300,7 @@ def train_one_epoch(
             loss_trans_target = tgt_output.transpose(0, 1).reshape(-1)
 
             loss_trans = translation_loss_fn(loss_trans_logits, loss_trans_target)
-            loss_rules = rules_loss_fn(psm_logits, psm)
+            loss_rules = rules_loss_fn(psv_logits, psv)
 
             train_loss_trans_epoch += loss_trans.item()
             train_loss_rules_epoch += loss_rules.item()
@@ -336,8 +336,8 @@ def validate_one_epoch(
     rules_loss_fn = tools["loss_fns"]["rules"]
 
     with torch.no_grad():
-        for src, tgt, psm in tqdm(loader, desc=f"Epoch {epoch_num:03d} [Val]  "):
-            src, tgt, psm = src.to(device), tgt.to(device), psm.to(device)
+        for src, tgt, psv in tqdm(loader, desc=f"Epoch {epoch_num:03d} [Val]  "):
+            src, tgt, psv = src.to(device), tgt.to(device), psv.to(device)
 
             tgt_input = tgt[:-1, :]
             tgt_output = tgt[1:, :]
@@ -347,7 +347,7 @@ def validate_one_epoch(
             )
 
             with autocast(device_type=device.type, enabled=use_amp):
-                trans_logits, psm_logits = model(
+                trans_logits, psv_logits = model(
                     src,
                     tgt_input,
                     src_padding_mask=src_mask,
@@ -358,15 +358,15 @@ def validate_one_epoch(
                 loss_trans_logits = trans_logits.reshape(-1, PHONEME_VOCAB_SIZE)
                 loss_trans_target = tgt_output.transpose(0, 1).reshape(-1)
                 loss_trans = translation_loss_fn(loss_trans_logits, loss_trans_target)
-                loss_rules = rules_loss_fn(psm_logits, psm)
+                loss_rules = rules_loss_fn(psv_logits, psv)
 
             val_loss_trans_epoch += loss_trans.item()
             val_loss_rules_epoch += loss_rules.item()
 
-            preds = torch.sigmoid(psm_logits)
+            preds = torch.sigmoid(psv_logits)
             binary_preds = (preds > 0.5).cpu().numpy()
             epoch_val_preds.append(binary_preds)
-            epoch_val_targets.append(psm.cpu().numpy().astype(int))
+            epoch_val_targets.append(psv.cpu().numpy().astype(int))
 
     avg_loss_trans = val_loss_trans_epoch / len(loader)
     avg_loss_rules = val_loss_rules_epoch / len(loader)

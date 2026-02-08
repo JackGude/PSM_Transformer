@@ -92,15 +92,15 @@ def compare_actual_vs_predicted(
 
     print("Running Inference...")
     with torch.no_grad():
-        for src, tgt, psm in tqdm(loader):
+        for src, tgt, psv in tqdm(loader):
             src = src.to(device)
             tgt_input = tgt[:-1, :].to(device)
             src_mask, tgt_pad_mask, tgt_mask = create_masks(
                 src, tgt_input, PAD_IDX, device
             )
-            _, psm_logits = model(src, tgt_input, src_mask, tgt_pad_mask, tgt_mask)
-            batch_probs = torch.sigmoid(psm_logits).cpu().numpy()
-            batch_psm = psm.cpu().numpy()
+            _, psv_logits = model(src, tgt_input, src_mask, tgt_pad_mask, tgt_mask)
+            batch_probs = torch.sigmoid(psv_logits).cpu().numpy()
+            batch_psv = psv.cpu().numpy()
 
             lang_token_ids = src[0, :].cpu().numpy()
 
@@ -109,7 +109,7 @@ def compare_actual_vs_predicted(
 
                 # ONLY process the target language
                 if token_str == target_token_str:
-                    actual_counts += batch_psm[i]
+                    actual_counts += batch_psv[i]
                     predicted_probs += batch_probs[i]
                     count_samples += 1
 

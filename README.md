@@ -5,7 +5,7 @@ This repository contains a linguistics / computational pipeline for modeling pho
 At a high level:
 
 - We start with a noisy cognate dataset (`data/unprocessed/`).
-- We run G2P to turn words into phoneme strings (`data/processed/`).
+- We run Grapheme to Phoneme (G2P) to turn words into phoneme strings (`data/processed/`).
 - We align Latin → target language phoneme strings via Needleman–Wunsch to extract phoneme-shift rules.
 - We train a multitask Transformer that:
   - translates Latin phoneme sequences into target-language phoneme sequences, and
@@ -24,8 +24,6 @@ At a high level:
     - a **master vocabulary** of observed shifts (strings like `"k->ʃ"`, `"a->o"`, deletions like `"x->-"`), and
     - a **dense multi-hot vector** over that vocabulary during training.
   - You can map a PSV back into a PSM by decoding each shift string and setting the corresponding matrix cell.
-
-Note: some variables in the code use `psm_*` names even when they are actually storing the PSV-style vector.
 
 ## Repository layout
 

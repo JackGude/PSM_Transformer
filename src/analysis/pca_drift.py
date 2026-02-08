@@ -1,3 +1,17 @@
+"""2D PCA visualization of model-derived phonetic drift.
+
+This script:
+- Loads a trained checkpoint and runs inference on a test CSV.
+- Aggregates the model's PSV/PSM predictions into per-language mean vectors
+  (centroids), with an all-zero vector used as the Latin origin.
+- Runs PCA (2 components) on the centroid vectors and produces a "drift map"
+  plot showing languages positioned in the learned PSV space.
+- Overlays a small number of salient phoneme-shift rules as arrows, chosen by
+  large PCA loading magnitude and filtered to remove vowels/markers/deletions.
+
+The main output is `pca_drift_map_pretty.png` written under `--out`.
+"""
+
 # src/pca_drift_pretty.py
 import argparse
 import os

@@ -1,3 +1,20 @@
+"""Dataset and vocabulary utilities for the phoneme/PSV multitask Transformer.
+
+ This module defines:
+ - `PhonemeDataset`: yields per-(word, target-language) training examples.
+   - Encoder input: Latin phoneme sequence prefixed with a language token and
+     terminated with `[EOS]`.
+   - Decoder input: target-language phoneme sequence in teacher-forcing format
+     (`[SOS] ... [EOS]`).
+   - Auxiliary target: a dense multi-hot PSV/PSM vector built from a sparse JSON
+     list of phoneme-shift rules stored in the CSV (e.g. `["k->ʃ", "a->o"]`).
+ - `collate_fn`: pads variable-length sequences and stacks PSV vectors.
+ - `build_vocabularies`: builds the phoneme/token -> id mapping from a DataFrame.
+
+ The training scripts in `src/training/` use these utilities to construct
+ DataLoaders and consistently encode phoneme sequences and rule vectors.
+ """
+
 import torch
 import pandas as pd
 import json

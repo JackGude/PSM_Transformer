@@ -1,3 +1,13 @@
+"""Create a small verification sample and a remaining training split from a full dataset.
+
+This CLI script randomly samples `n` rows from a processed dataset CSV to create:
+- a smaller `test_file` intended for manual inspection / verification, and
+- a `train_file` containing the remaining rows.
+
+Typical usage is after building `data/processed/full_dataset.csv` (from
+`src/alignment/N_W.py`), before training the Transformer.
+"""
+
 # src/create_test_set.py
 import argparse
 import os

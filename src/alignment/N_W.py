@@ -1,3 +1,24 @@
+"""Needleman–Wunsch alignment + PSV vocabulary/dataset generation.
+ 
+ This file serves two roles:
+ 
+ - Library utilities:
+   - `needleman_wunsch`: global sequence alignment for two phoneme sequences.
+   - `clean_phoneme_string`: converts a stored phoneme string into a list.
+ 
+ - Standalone preprocessing script:
+   - Reads `data/processed/phonemes.csv` (output of `src/data_tools/G2P.py`).
+   - Aligns Vulgar Latin phonemes to each target language via Needleman–Wunsch.
+   - Extracts per-word phoneme-shift rules (e.g. `k->ʃ`, deletions as `x->-`).
+   - Writes:
+     - `data/processed/psv_vocabulary.json`: master list of unique shifts.
+     - `data/processed/full_dataset.csv`: original rows plus per-language PSV
+       columns containing JSON-encoded sparse shift lists.
+ 
+ The resulting `full_dataset.csv` is the main input to later splitting,
+ weighting, training, and analysis scripts.
+ """
+
 import json
 
 import numpy as np

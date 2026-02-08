@@ -1,3 +1,19 @@
+"""Probe for context sensitivity in the PSV/PSM head.
+
+This script is a small experiment that checks whether the model's confidence in
+a particular shift rule changes depending on phoneme context/position.
+
+Current implementation:
+- Loads a trained checkpoint and iterates over the test dataset.
+- Filters to a single target language (currently Romanian) and a single rule
+  (currently hard-coded to `p->b`).
+- Collects the model's predicted probability for that rule and compares
+  examples where the source phoneme (`p`) occurs word-initially vs medially.
+
+Output is printed to stdout; the goal is qualitative evidence that the model is
+not merely memorizing unigram shifts but is sensitive to surrounding context.
+"""
+
 # src/prove_context.py
 import argparse
 import torch

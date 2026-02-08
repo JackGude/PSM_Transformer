@@ -1,3 +1,18 @@
+"""Evaluate a saved multitask model checkpoint on a test CSV.
+
+ This script:
+ - Loads a checkpoint produced by `src/training/train.py`.
+ - Reconstructs the `PhonemeTransformer` using the saved `config` and
+   `data_artifacts` (vocabularies, PSV mapping, PAD index).
+ - Runs a forward pass over the provided test dataset and reports:
+   - Translation loss (cross-entropy over phoneme tokens).
+   - PSV/PSM loss (BCEWithLogits over the dense shift vector).
+   - Micro/macro F1 for the binary PSV/PSM predictions (thresholded at 0.5).
+
+ It is intended as a lightweight CLI sanity-check / reporting tool, separate
+ from the richer visualization scripts in `src/analysis/`.
+ """
+
 # src/test.py
 import argparse
 from functools import partial

@@ -1,3 +1,14 @@
+"""Compute per-shift weights for the PSV/PSM loss based on training-set frequency.
+
+ This script scans the sparse PSV columns (JSON-encoded shift lists) in
+ `data/processed/train_dataset.csv`, counts how often each shift occurs, and
+ saves a normalized weight tensor to `data/processed/psv_weights.pt`.
+
+ `src/training/train.py` will load this tensor (if present) and pass it to
+ `BCEWithLogitsLoss(weight=...)` so that common rules contribute more to the
+ auxiliary loss than extremely rare/noisy ones.
+ """
+
 # src/calculate_weights.py
 from collections import Counter
 import json

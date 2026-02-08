@@ -1,3 +1,17 @@
+"""3D PCA visualization of model-derived phonetic drift (with optional GIF).
+
+This script is the 3D counterpart to `pca_drift.py`.
+- It loads a checkpoint, computes per-language PSV/PSM centroids from model
+  predictions on a test CSV, and runs PCA with 3 components.
+- It plots the language points (with Latin as the origin) in 3D and overlays a
+  few salient shift rules as arrows using PCA loadings.
+- With `--gif`, it renders a rotating GIF for presentations.
+
+Outputs:
+- `pca_drift_map_3d.png`
+- optionally `pca_drift_map_3d.gif`
+"""
+
 # src/pca_drift_3d.py
 import argparse
 import os

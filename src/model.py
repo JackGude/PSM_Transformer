@@ -1,3 +1,18 @@
+"""Transformer model definition for phoneme translation + PSV/PSM prediction.
+
+ This module contains:
+ - `PositionalEncoding`: standard sinusoidal positional encoding.
+ - `PhonemeTransformer`: a two-headed `torch.nn.Transformer`.
+   - Head 1 (`fc_out`): token-level logits for phoneme translation.
+   - Head 2 (`aux_head`): sequence-level logits for a dense multi-label
+     phoneme-shift vector (called PSV in the paper; often named PSM/psm in code).
+     The auxiliary head pools encoder states (masked mean) into a single vector.
+ - `create_masks`: builds padding masks and the decoder causal mask.
+
+ Training/evaluation scripts import these definitions to ensure consistent model
+ structure when saving/loading checkpoints.
+ """
+
 import torch
 import torch.nn as nn
 import math

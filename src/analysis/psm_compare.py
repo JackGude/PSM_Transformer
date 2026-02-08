@@ -1,3 +1,18 @@
+"""Compare ground-truth vs model-predicted PSV/PSM shift matrices for one language.
+
+This script:
+- Loads a trained checkpoint and runs inference on a test CSV.
+- Filters batches down to examples for a single target language.
+- Aggregates:
+  - ground-truth multi-hot PSV vectors into an average occurrence rate, and
+  - model logits into average predicted probabilities.
+- Visualizes both as sparse "shift matrices" (source phoneme x target phoneme):
+  - left: rules observed in the dataset (includes noise/typos)
+  - right: rules the model predicts above a confidence threshold
+
+Output: `results/visuals/compare_matrix_<LANG>.png`.
+"""
+
 # src/compare_matrices.py
 import argparse
 import os

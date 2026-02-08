@@ -1,3 +1,17 @@
+"""Ground-truth PCA drift map derived directly from PSV labels in the CSV.
+
+Unlike `pca_drift.py` / `pca_drift_3d.py` (which use model predictions), this
+script aggregates the *observed* PSV shift lists from the dataset CSV to build
+per-language average PSV vectors.
+
+It then runs PCA (3 components) and plots a 3D drift map with Latin as an
+all-zero origin vector. With `--gif`, it can export a rotating GIF.
+
+Outputs:
+- `pca_ground_truth.png`
+- optionally `pca_ground_truth.gif`
+"""
+
 # src/pca_ground_truth.py
 import argparse
 import os

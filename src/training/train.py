@@ -1,3 +1,23 @@
+"""Train the multitask phoneme Transformer (translation + PSV/PSM prediction).
+ 
+ This script is the main training entry point for the project.
+ 
+ Responsibilities:
+ - Loads the processed training CSV and PSV vocabulary from `data/processed/`.
+ - Builds the phoneme token vocabulary (including per-language tokens).
+ - Constructs `DataLoader`s that treat each (Latin word, target language) pair as
+   a separate training example.
+ - Trains a `PhonemeTransformer` with two losses:
+   - Translation loss: `CrossEntropyLoss` over decoder phoneme tokens.
+   - PSV/PSM loss: `BCEWithLogitsLoss` over a dense multi-label shift vector.
+ - Saves the best checkpoint (by validation loss) to `CONFIG["model_save_path"]`.
+ 
+ Checkpoint format (used by `src/training/test.py` and `src/analysis/*`):
+ - `model_state_dict`
+ - `config` (hyperparameters + language list)
+ - `data_artifacts` (vocabularies, PAD index, PSV shift mapping, etc.)
+ """
+
 from functools import partial
 import json
 

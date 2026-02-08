@@ -1,3 +1,18 @@
+"""Grapheme-to-phoneme preprocessing using a multilingual ByT5-based model.
+ 
+ This script converts the raw cognate spreadsheet into per-language phoneme
+ strings using the open-source HuggingFace model:
+ - `charsiu/g2p_multilingual_byT5_small_100`
+ 
+ Expected inputs/outputs (configurable via constants below):
+ - Input: `data/unprocessed/Cognates.xlsx` (sheet: `4 Languages`)
+ - Output: a CSV in `data/processed/` containing the original columns plus new
+   `*_phonemes` columns (e.g. `French_phonemes`).
+ 
+ The generated phoneme CSV is later consumed by `src/alignment/N_W.py` to align
+ Latin to each target language and derive the PSV (phoneme shift vector) labels.
+ """
+
 import pandas as pd
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 from tqdm import tqdm

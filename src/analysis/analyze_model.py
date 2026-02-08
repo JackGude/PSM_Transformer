@@ -1,4 +1,18 @@
-# src/analyze.py
+"""Model-level PSV/PSM analysis: language centroids + dendrogram.
+ 
+ This script loads a trained checkpoint and runs the model over a test CSV to
+ obtain predicted PSV/PSM probability vectors for each (word, language) example.
+ It then:
+ - Aggregates predictions into a per-language centroid (mean probability vector).
+ - Writes a text report of the top consonant-to-consonant shifts per language
+   (using a strict filter to remove vowels, markers, deletions, and identities).
+ - Computes pairwise distances between language centroids and generates:
+   - a clustered distance heatmap (`heatmap.png`)
+   - a hierarchical-clustering dendrogram (`dendrogram.png`)
+ 
+ Outputs are written under `--out` (default: `results/analysis`).
+ """
+
 import argparse
 import os
 import torch

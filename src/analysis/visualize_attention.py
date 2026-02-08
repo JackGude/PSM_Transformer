@@ -1,3 +1,17 @@
+"""Visualize cross-attention for a single (Latin -> target language) word example.
+
+ This script loads a trained checkpoint and instruments the last decoder layer's
+ cross-attention (`multihead_attn`) to capture attention weights. It then:
+ - constructs a single-example input from a provided Latin phoneme string and
+   language token,
+ - uses the dataset to fetch the corresponding ground-truth target phonemes when
+   available (otherwise falls back to a dummy target),
+ - runs a forward pass and plots a heatmap of cross-attention weights between
+   output tokens (target phonemes) and input tokens (language token + Latin).
+
+ Output: `results/visuals/attention_<LANG>_<WORD>.png`.
+ """
+
 # src/visualize_attention.py
 import argparse
 import os

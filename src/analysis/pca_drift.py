@@ -9,7 +9,7 @@ This script:
 - Overlays a small number of salient phoneme-shift rules as arrows, chosen by
   large PCA loading magnitude and filtered to remove vowels/markers/deletions.
 
-The main output is `pca_drift_map_pretty.png` written under `--out`.
+The main output is `pca_drift_map_2d.png` written under `--out`.
 """
 
 # src/pca_drift_pretty.py
@@ -227,7 +227,7 @@ def generate_drift_map(model_path, test_data_path, output_dir, device):
     )
     
     os.makedirs(output_dir, exist_ok=True)
-    save_path = os.path.join(output_dir, "pca_drift_map_pretty.png")
+    save_path = os.path.join(output_dir, "pca_drift_map_2d.png")
     plt.savefig(save_path, bbox_inches='tight')
     print(f"Pretty PCA Plot saved to {save_path}")
 
